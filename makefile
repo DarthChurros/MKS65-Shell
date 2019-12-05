@@ -7,7 +7,7 @@ all: smash.o
 	gcc $(DATA) -o smash smash.o
 
 smash.o: smash.c
-	gcc $(DATA) -c main.c
+	gcc $(DATA) -c smash.c
 
 run:
 	$(VG) ./smash $(ARGS)
