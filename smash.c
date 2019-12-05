@@ -7,3 +7,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <dirent.h>
+
+int main() {
+  return 0;
+}
