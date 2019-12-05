@@ -32,7 +32,20 @@ Other features
 char** parse_args(char* line);
 
 int main() {
-     return 0;
+  int run = 1;
+  char cmd[256];
+  while (run) {
+    printf("smash § ");
+    scanf("%s", cmd);
+    char** args = parse_args(cmd);
+    if (!strcmp(args[0], "exit")) {
+      run = 0;
+    } else {
+      execvp(args[0], args);
+      free(args);
+    }
+  }
+  return 0;
 }
 
 char** parse_args(char* line) {
