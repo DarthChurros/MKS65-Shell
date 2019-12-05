@@ -32,18 +32,24 @@ Other features
 char** parse_args(char* line);
 
 int main() {
-  int run = 1;
   char cmd[256];
-  while (run) {
-    printf("smash § ");
-    scanf("%s", cmd);
+  while (1) {
+    printf("\nsmash § ");
+    fgets(cmd, 256, stdin);
     char** args = parse_args(cmd);
     if (!strcmp(args[0], "exit")) {
-      run = 0;
-    } else {
-      execvp(args[0], args);
-      free(args);
+      break;
     }
+    // char** p = args;
+    // printf("[");
+    // while (*p) {
+    //   printf("%s, ", *p);
+    //   p += sizeof(char**);
+    // }
+    // printf("]");
+
+    execvp(args[0], args);
+    free(args);
   }
   return 0;
 }
@@ -68,5 +74,7 @@ char** parse_args(char* line) {
     line = arg;
     i++;
   }
+  split[i-1] = strsep(&split[i-1], "\n");
+
   return split;
 }
