@@ -19,17 +19,41 @@ You should have a readme file with the following:
      A copy of every function header
      An example of the readme file can be found in the github repository for this assignment
 This project should use separate C files as necessary.
-The project should be built using make and a makefile, I will only compile by using make. 
+The project should be built using make and a makefile, I will only compile by using make.
 
 Try starting with these restrictions on input:
      To make your life easier, you could require that all items on the command line are to be separated by a single space.
      When parsing the line, it might help to count the number of tokens (individual pieces), before parsing.
-     You can restrict the locations and ordering of > and <. 
-     You can limit piping (|) to a single pipe. 
+     You can restrict the locations and ordering of > and <.
+     You can limit piping (|) to a single pipe.
 
 Other features
 */
+char** parse_args(char* line);
 
 int main() {
      return 0;
+}
+
+char** parse_args(char* line) {
+  int i = 0;
+  int num_args = 0;
+  while (line[i] != '\0') {
+    if (line[i] == ' '){
+      num_args++;
+    }
+    i++;
+  }
+  char** split = calloc(num_args + 1, sizeof(char*));
+  split[num_args] = NULL;
+  char* arg = line;
+  i = 0;
+
+  while (arg) {
+    strsep(&arg, " ");
+    split[i] = line;
+    line = arg;
+    i++;
+  }
+  return split;
 }
