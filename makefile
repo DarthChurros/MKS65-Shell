@@ -6,7 +6,7 @@ endif
 all: smash.o
 	gcc $(DATA) -o smash smash.o
 
-main.o: smash.c
+smash.o: smash.c
 	gcc $(DATA) -c main.c
 
 run:
