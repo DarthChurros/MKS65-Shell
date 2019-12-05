@@ -47,8 +47,11 @@ int main() {
     //   p += sizeof(char**);
     // }
     // printf("]");
-
-    execvp(args[0], args);
+    if (fork()) {
+      wait(0);
+    } else {
+      execvp(args[0], args);
+    }
     free(args);
   }
   return 0;
