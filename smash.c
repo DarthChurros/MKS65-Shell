@@ -40,13 +40,12 @@ int main() {
     if (!strcmp(args[0], "exit")) {
       break;
     }
-    // char** p = args;
-    // printf("[");
-    // while (*p) {
-    //   printf("%s, ", *p);
-    //   p += sizeof(char**);
-    // }
-    // printf("]");
+    if (!strcmp(args[0], "cd")) {
+      char dir[256];
+      strcpy(dir, "./");
+      strcat(dir, args[1]);
+      chdir(dir);
+    }
     if (fork()) {
       wait(0);
     } else {
