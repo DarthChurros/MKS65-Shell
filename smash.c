@@ -34,24 +34,64 @@ char** parse_args(char* line);
 int main() {
   char cmd[256];
   while (1) {
+    // printing cursor for new line
     printf("\nsmash § ");
+    // takes input
     fgets(cmd, 256, stdin);
-    char** args = parse_args(cmd);
-    if (!strcmp(args[0], "exit")) {
-      break;
+
+    // checking for ; delimiter 
+    int i = 0;
+    int cmd_ctr = 1;
+    for (i = 0; i < strlen(cmd); i++) {
+      cmd_ctr += cmd[i] == ';';
     }
-    if (!strcmp(args[0], "cd")) {
-      char dir[256];
-      strcpy(dir, "./");
-      strcat(dir, args[1]);
-      chdir(dir);
+    
+    char ** cmd_array = calloc(cmd_ctr + 1, sizeof(char *));
+    cmd_array[cmd_ctr] = NULL;
+    char * command = cmd;
+    i = 0;
+    char * p = cmd;
+
+    while (command) {
+      strsep(&command, " ; ");
+      cmd_array[i] = p;
+      p = command;
+      i++;
     }
-    if (fork()) {
-      wait(0);
-    } else {
-      execvp(args[0], args);
+
+    for (i = 0; i < cmd_ctr; i++) {
+      // parseargs input
+      char **args = parse_args(cmd_array[i]);
+
+      // 'exit'
+      if (!strcmp(args[0], "exit"))
+      {
+        break;
+      }
+
+      // cd
+      if (!strcmp(args[0], "cd"))
+      {
+        char dir[256];
+        strcpy(dir, "./");
+        strcat(dir, args[1]);
+        chdir(dir);
+      }
+
+      // creating subprocess
+      if (fork())
+      {
+        wait(0);
+      }
+      else
+      {
+        // executing input
+        execvp(args[0], args);
+      }
+
+      // freeing memory
+      free(args);
     }
-    free(args);
   }
   return 0;
 }
