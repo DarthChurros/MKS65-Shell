@@ -4,7 +4,7 @@ ifdef MEM
 endif
 
 all: smash.o parse.o
-	gcc $(DATA) -o smash smash.o
+	gcc $(DATA) -o smash smash.o parse.o
 
 smash.o: smash.c
 	gcc $(DATA) -c smash.c
