@@ -1,5 +1,8 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include "parse.h"
 
 char** parse_args(char* line, char delim) {
   line = strip(line);
