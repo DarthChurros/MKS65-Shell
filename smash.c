@@ -3,6 +3,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <ctype.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <signal.h>
@@ -29,7 +30,8 @@ Try starting with these restrictions on input:
 
 Other features
 */
-char** parse_args(char* line);
+char** parse_args(char* line, char delim);
+char* strip(char* str);
 
 int main() {
   char cmd[256];
@@ -39,29 +41,25 @@ int main() {
     // takes input
     fgets(cmd, 256, stdin);
 
-    // checking for ; delimiter 
+    // checking for ; delimiter
     int i = 0;
     int cmd_ctr = 1;
     for (i = 0; i < strlen(cmd); i++) {
       cmd_ctr += cmd[i] == ';';
     }
-    
-    char ** cmd_array = calloc(cmd_ctr + 1, sizeof(char *));
-    cmd_array[cmd_ctr] = NULL;
-    char * command = cmd;
-    i = 0;
-    char * p = cmd;
 
-    while (command) {
-      strsep(&command, " ; ");
-      cmd_array[i] = p;
-      p = command;
-      i++;
-    }
+    printf("parsing\n");
+
+    char ** cmd_array = parse_args(cmd, ';');
 
     for (i = 0; i < cmd_ctr; i++) {
       // parseargs input
-      char **args = parse_args(cmd_array[i]);
+      char **args = parse_args(cmd_array[i], ' ');
+      // char ** arg;
+      // for (arg = args; *arg; arg++){
+      //   printf("%p --> %s\n",arg, *arg);
+      // }
+      // printf("\nbruh\n\n");
 
       // 'exit'
       if (!strcmp(args[0], "exit"))
@@ -96,11 +94,17 @@ int main() {
   return 0;
 }
 
-char** parse_args(char* line) {
+char** parse_args(char* line, char delim) {
+  line = strip(line);
+
+  if (!line) return NULL;
+
+  char str_d[] = {delim, '\0'};
+
   int i = 0;
   int num_args = 0;
   while (line[i] != '\0') {
-    if (line[i] == ' '){
+    if (line[i] == delim){
       num_args++;
     }
     i++;
@@ -111,12 +115,28 @@ char** parse_args(char* line) {
   i = 0;
 
   while (arg) {
-    strsep(&arg, " ");
+    strsep(&arg, str_d);
     split[i] = line;
     line = arg;
     i++;
   }
-  split[i-1] = strsep(&split[i-1], "\n");
+  split[i] = NULL;
 
   return split;
+}
+
+char* strip(char* str) {
+  char *end;
+
+  while(isspace((unsigned char)*str)) str++;
+
+  if(*str == 0)
+    return str;
+
+  end = str + strlen(str) - 1;
+  while(end > str && isspace((unsigned char)*end)) end--;
+
+  end[1] = '\0';
+
+  return str;
 }
