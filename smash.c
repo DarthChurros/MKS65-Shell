@@ -48,7 +48,7 @@ int main() {
       cmd_ctr += cmd[i] == ';';
     }
 
-    printf("parsing\n");
+    // printf("parsing\n");
 
     char ** cmd_array = parse_args(cmd, ';');
 
@@ -64,7 +64,7 @@ int main() {
       // 'exit'
       if (!strcmp(args[0], "exit"))
       {
-        break;
+        return 0;
       }
 
       // cd
