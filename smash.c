@@ -61,30 +61,7 @@ int main() {
       // printf("\nbruh\n\n");
 
       // 'exit'
-      if (!strcmp(args[0], "exit"))
-      {
-        return 0;
-      }
-
-      // cd
-      if (!strcmp(args[0], "cd"))
-      {
-        char dir[256];
-        strcpy(dir, "./");
-        strcat(dir, args[1]);
-        chdir(dir);
-      }
-
-      // creating subprocess
-      if (fork())
-      {
-        wait(0);
-      }
-      else
-      {
-        // executing input
-        execvp(args[0], args);
-      }
+      if (exec_std(args)) return 1;
 
       // freeing memory
       free(args);
