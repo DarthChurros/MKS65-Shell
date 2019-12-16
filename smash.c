@@ -8,6 +8,7 @@
 #include <signal.h>
 #include <dirent.h>
 #include "parse.h"
+#include "execute.h"
 
 /*
 Every function you write must have a function header describing the arguments, return value and what the function does.
