@@ -61,7 +61,7 @@ int main() {
       // printf("\nbruh\n\n");
 
       // 'exit'
-      if (exec_std(args)) return 1;
+      if (exec_std(args)) return 0;
 
       // freeing memory
       free(args);
