@@ -36,7 +36,7 @@ int main() {
   char cmd[256];
   while (1) {
     // printing cursor for new line
-    printf("\nsmash § ");
+    printf("smash § ");
     // takes input
     fgets(cmd, 256, stdin);
 
