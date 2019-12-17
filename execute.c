@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include "execute.h"
 
 int exec_std(char** cmd) {
@@ -29,7 +30,57 @@ int exec_std(char** cmd) {
   return 0;
 }
 
-int exec_redir(char** cmd, char** files) {
+int exec_redir(char** cmd, char** files, int* modes) {
+
+  int in = 0;
+  int out = 0;
+
+  int in_old = dup(fileno(stdin));
+  int out_old = dup(fileno(stdout));
+
+  int i;
+  for (i = 0; files[i]; i++) {
+    int fd;
+    switch (modes[i]) {
+      case 0:
+        fd = open(files[i], O_RDONLY);
+        if (!in) {
+          dup2(fd, fileno(stdin));
+          in = fd;
+        } else {
+          dup2(in, fd);
+        }
+        break;
+      case 1:
+        fd = open(files[i], O_WRONLY | O_CREAT, 0644);
+        if (!out) {
+          dup2(fd, fileno(stdout));
+          out = fd;
+        } else {
+          dup2(out, fd);
+        }
+        break;
+      case 2:
+        fd = open(files[i], O_WRONLY | O_APPEND);
+        if (!out) {
+          dup2(fd, fileno(stdout));
+          out = fd;
+        } else {
+          dup2(out, fd);
+        }
+        break;
+      default:
+        exit(1);
+    }
+  }
+
+  exec_std(cmd);
+
+  close(out);
+  close(in);
+
+  stdin = fdopen(in_old, "r");
+  stdout = fdopen(in_old, "w");
   return 0;
 }
 
