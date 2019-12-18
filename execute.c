@@ -12,10 +12,12 @@ int exec_std(char** cmd) {
 
   // cd
   else if (!strcmp(cmd[0], "cd")) {
-    char dir[256];
-    strcpy(dir, "./");
-    strcat(dir, cmd[1]);
-    chdir(dir);
+    if (cmd[1]) {
+      char dir[256];
+      strcpy(dir, "./");
+      strcat(dir, cmd[1]);
+      chdir(dir);
+    }
   }
 
   // creating subprocess
