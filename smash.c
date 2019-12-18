@@ -49,12 +49,11 @@ int main() {
       // while (*p1) {
       //   p1++;
       // }
-      char** c;
-      for (c = p0; *c; c++) printf("\t%s\n", *c);
+      // char** c;
 
       char** redir_array = parse_args(*p0, "<>");
 
-      for (c = redir_array; *c; c++) printf("\t%s\n", *c);
+      // for (c = redir_array; *c; c++) printf("\t\'%s\'\n", *c);
 
       char* d;
       int modes[sizeof(redir_array)/sizeof(char*) - 1];
@@ -76,10 +75,12 @@ int main() {
 
       char** args = parse_args(*redir_array, " ");
 
-      printf("______\n");
-      for (c = args; *c; c++) printf("%s\n", *c);
+      // printf("______\n");
+      // for (c = args; *c; c++) printf("\t\'%s\'\n", *c);
 
-      if (exec_redir(args, &redir_array[1], modes)) return 0;
+      if (exec_std(args)) return 0;
+
+      // if (exec_redir(args, &redir_array[1], modes)) return 0;
 
       free(args);
       free(redir_array);

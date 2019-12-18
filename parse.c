@@ -13,7 +13,7 @@ char** parse_args(char* ln, char* delim) {
   int i = 0;
   int num_args = 1;
   while (line[i]) {
-    if (strchr(delim, line[i])) {
+    if (line[i] != line[i-1] && strchr(delim, line[i])) {
       num_args++;
     }
     i++;
@@ -27,7 +27,7 @@ char** parse_args(char* ln, char* delim) {
 
   while (arg) {
     line = strsep(&arg, delim);
-    if (line[1]) {
+    if (*line) {
       split[i] = line;
       i++;
     }
