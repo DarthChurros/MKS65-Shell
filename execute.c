@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/errno.h>
+#include <sys/wait.h>
 #include "execute.h"
 
 int exec_std(char** cmd) {
