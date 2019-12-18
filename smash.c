@@ -41,15 +41,21 @@ int main() {
     fgets(cmd, 256, stdin);
 
     // parsing by ; delimiter, splitting commands
-    char** cmd_array = parse_args(cmd, ';');
+    char** cmd_array = parse_args(cmd, ";");
     char** p0 = cmd_array;
     while (*p0) {
+      // char** pipe_array = parse_args(*p0, '|');
+      // char** p1 = pipe_array;
+      // while (*p1) {
+      //   char** redir_array = parse_args(*p1, '<');
+      // }
 
-      char** args = parse_args(*p0, ' ');
+      char** args = parse_args(*p0, " ");
 
       if (exec_std(args)) return 0;
 
       free(args);
+
       p0++;
     }
   }
