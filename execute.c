@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/errno.h>
 #include "execute.h"
 
 int exec_std(char** cmd) {
@@ -26,11 +27,10 @@ int exec_std(char** cmd) {
   }
 
   // executing input
-  else {
-    if (execvp(cmd[0], cmd) == -1) {
-      printf("Command not found!\n");
-    }
+  else if (execvp(cmd[0], cmd) == -1) {
+    printf("%d: %s\n",errno, strerror(errno));
   }
+
   return 0;
 }
 
@@ -78,7 +78,7 @@ int exec_redir(char** cmd, char** files, int* modes) {
     }
   }
 
-  exec_std(cmd);
+  if(exec_std(cmd)) return 1;
 
   close(out);
   close(in);

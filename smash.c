@@ -43,21 +43,51 @@ int main() {
     // parsing by ; delimiter, splitting commands
     char** cmd_array = parse_args(cmd, ";");
     char** p0 = cmd_array;
+
     while (*p0) {
-      // char** pipe_array = parse_args(*p0, '|');
+      // char** pipe_array = parse_args(*p0, "|");
       // char** p1 = pipe_array;
       // while (*p1) {
-      //   char** redir_array = parse_args(*p1, '<');
+      //   p1++;
       // }
+      char** c;
+      for (c = p0; *c; c++) printf("\t%s\n", *c);
 
-      char** args = parse_args(*p0, " ");
+      char** redir_array = parse_args(*p0, "<>");
 
-      if (exec_std(args)) return 0;
+      for (c = redir_array; *c; c++) printf("\t%s\n", *c);
+
+      char* d;
+      int modes[sizeof(redir_array)/sizeof(char*) - 1];
+
+      int i = 0;
+
+      for (d = *p0; *d; d++) {
+        if (*d == '>') {
+          if (d[1] == '>') {
+            modes[i++] = 2;
+          } else {
+            modes[i++] = 1;
+          }
+        }
+        if (*d == '<') {
+          modes[i++] = 0;
+        }
+      }
+
+      char** args = parse_args(*redir_array, " ");
+
+      printf("______\n");
+      for (c = args; *c; c++) printf("%s\n", *c);
+
+      if (exec_redir(args, &redir_array[1], modes)) return 0;
 
       free(args);
+      free(redir_array);
 
       p0++;
     }
+    free(cmd_array);
   }
   return 0;
 }
