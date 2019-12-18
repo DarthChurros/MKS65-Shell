@@ -26,7 +26,7 @@ int exec_std(char** cmd) {
   // executing input
   else {
     if (execvp(cmd[0], cmd) == -1) {
-      printf("Command not found!");
+      printf("Command not found!\n");
     }
   }
   return 0;
