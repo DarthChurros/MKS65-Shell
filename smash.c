@@ -50,7 +50,7 @@ int main() {
       char ** p1 = pipe_array;
       while (*p1) {
         // parsing by ' ' delimiter, splitting words
-        char ** args = parse_args(p1, ' ');
+        char ** args = parse_args(p2, ' ');
         // 'exit'
         if (!strcmp(args[0], "exit"))
         {
