@@ -9,6 +9,7 @@
 #include <dirent.h>
 #include "parse.h"
 #include "pipe.h"
+#include "execute.h"
 
 /*
 Every function you write must have a function header describing the arguments, return value and what the function does.
@@ -36,7 +37,7 @@ int main() {
   char cmd[256];
   while (1) {
     // printing cursor for new line
-    printf("\nsmash § ");
+    printf("smash § ");
     // takes input
     fgets(cmd, 256, stdin);
 
@@ -93,6 +94,12 @@ int main() {
       // printf("\nbruh\n\n");
 
       
+      // 'exit'
+      if (exec_std(args)) return 0;
+
+      // freeing memory
+      free(args);
+    }
   }
   return 0;
 }
