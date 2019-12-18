@@ -4,5 +4,10 @@ __*by Tejas Narayan and Ahmed Sultan*__
 *Systems Level Programming pd 5, Mr. Dyrland-Weaver*
 
 ### functions we've implemented
-ls
-exit
+*exit
+*cd
+*forked executables
+  *ls
+  *pwd
+  *make
+*command-line arguments
