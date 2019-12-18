@@ -8,7 +8,6 @@
 #include <signal.h>
 #include <dirent.h>
 #include "parse.h"
-#include "pipe.h"
 #include "execute.h"
 
 /*
@@ -42,63 +41,16 @@ int main() {
     fgets(cmd, 256, stdin);
 
     // parsing by ; delimiter, splitting commands
-    char ** cmd_array = parse_args(cmd, ';');
-    char ** p0 = cmd_array;
+    char** cmd_array = parse_args(cmd, ';');
+    char** p0 = cmd_array;
     while (*p0) {
-      // parsing by | delimiter, splitting pipe commands
-      char ** pipe_array = parse_args(p0, '|');
-      char ** p1 = pipe_array;
-      while (*p1) {
-        // parsing by ' ' delimiter, splitting words
-        char ** args = parse_args(p2, ' ');
-        // 'exit'
-        if (!strcmp(args[0], "exit"))
-        {
-          return 0;
-        }
 
-        // cd
-        if (!strcmp(args[0], "cd"))
-        {
-          char dir[256];
-          strcpy(dir, "./");
-          strcat(dir, args[1]);
-          chdir(dir);
-        }
+      char** args = parse_args(*p0, ' ');
 
-        // creating subprocess
-        if (fork())
-        {
-          wait(0);
-        }
-        else
-        {
-          // executing input
-          execvp(args[0], args);
-        }
-
-        // freeing memory
-        free(args);
-      }
-      free(pipe_array);
-    }
-    for (i = 0; i < cmd_ctr; i++) {
-      // parseargs input
-      // parsing in the case of a pipe
-      char **pipe_parse = parse_args(cmd_array[i], '|');
-      char **args = parse_args(pipe_parse[i], ' ');
-      // char ** arg;
-      // for (arg = args; *arg; arg++){
-      //   printf("%p --> %s\n",arg, *arg);
-      // }
-      // printf("\nbruh\n\n");
-
-      
-      // 'exit'
       if (exec_std(args)) return 0;
 
-      // freeing memory
       free(args);
+      p0++;
     }
   }
   return 0;
