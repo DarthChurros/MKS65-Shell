@@ -31,17 +31,21 @@ Try starting with these restrictions on input:
 Other features
 */
 
+
 int main() {
   char cmd[256];
+  char cmd_copy[256];
   while (1) {
     // printing cursor for new line
     printf("smash § ");
     // takes input
     fgets(cmd, 256, stdin);
+    strcpy(cmd_copy, cmd);
 
     // parsing by ; delimiter, splitting commands
     char** cmd_array = parse_args(cmd, ";");
     char** p0 = cmd_array;
+    char* p1 = cmd_copy;
 
     while (*p0) {
       // char** pipe_array = parse_args(*p0, "|");
@@ -49,7 +53,6 @@ int main() {
       // while (*p1) {
       //   p1++;
       // }
-      // char** c;
 
       char** redir_array = parse_args(*p0, "<>");
 
@@ -60,27 +63,29 @@ int main() {
 
       int i = 0;
 
-      for (d = *p0; *d; d++) {
+      for (d = p1; *d; d++) {
         if (*d == '>') {
           if (d[1] == '>') {
-            modes[i++] = 2;
+            modes[i++] = 3;
           } else {
-            modes[i++] = 1;
+            modes[i++] = 2;
           }
         }
         if (*d == '<') {
-          modes[i++] = 0;
+          modes[i++] = 1;
         }
       }
+      modes[i] = 0;
 
       char** args = parse_args(*redir_array, " ");
 
       // printf("______\n");
+      // char** c;
       // for (c = args; *c; c++) printf("\t\'%s\'\n", *c);
 
-      if (exec_std(args)) return 0;
+      // if (exec_std(args)) return 0;
 
-      // if (exec_redir(args, &redir_array[1], modes)) return 0;
+      if (exec_redir(args, &redir_array[1], modes)) return 0;
 
       free(args);
       free(redir_array);
