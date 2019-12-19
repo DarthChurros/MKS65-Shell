@@ -38,11 +38,11 @@ int exec_std(char** cmd) {
 
 int exec_redir(char** cmd, char** files, int* modes) {
 
-  char** p;
-  int* q;
-  for (p = cmd; *p; p++) printf("cmd: \'%s\'\n", *p);
-  for (p = files; *p; p++) printf("file: \'%s\'\n", *p);
-  for (q = modes; *q; q++) printf("mode: \'%d\'\n", *q);
+  // char** p;
+  // int* q;
+  // for (p = cmd; *p; p++) printf("cmd: \'%s\'\n", *p);
+  // for (p = files; *p; p++) printf("file: \'%s\'\n", *p);
+  // for (q = modes; *q; q++) printf("mode: \'%d\'\n", *q);
 
   int use_in = 1;
   int use_out = 1;

@@ -36,12 +36,17 @@ Other features
 int main() {
   char cmd[256];
   char cmd_copy[256];
+
   while (1) {
     // printing cursor for new line
     printf("smash § ");
     // takes input
     fgets(cmd, 256, stdin);
-    strcpy(cmd_copy, cmd);
+
+    if (feof(stdin)) {
+      strncpy(cmd, "exit", 256);
+    }
+    strncpy(cmd_copy, cmd, 256);
 
     // parsing by ; delimiter, splitting commands
     char** cmd_array = parse_args(cmd, ";");
@@ -64,11 +69,11 @@ int main() {
       char** p1;
       for (p1 = redir_array; *p1; p1++) *p1 = strip(*p1);
 
-      printf("%lu\n", sizeof(redir_array)/sizeof(int));
+      // printf("%lu\n", sizeof(redir_array)/sizeof(int));
 
       int i = 0;
 
-      printf("running\n");
+      // printf("running\n");
       char* d;
       for (d = &(cmd_copy[1]); *d; d++) {
         if (*d == '>') {
@@ -85,8 +90,8 @@ int main() {
       }
       modes[i] = 0;
 
-      int* n;
-      for (n = modes; *n; n++) printf("%d\n", *n);
+      // int* n;
+      // for (n = modes; *n; n++) printf("%d\n", *n);
 
       char** args = parse_args(*redir_array, " ");
 
