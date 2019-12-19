@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <dirent.h>
+#include <sys/ioctl.h>
 #include "parse.h"
 #include "execute.h"
 
@@ -32,21 +33,29 @@ Try starting with these restrictions on input:
 Other features
 */
 
+char cmd[256];
+char cmd_copy[256];
+
+void int_handler(int sig)  {
+  printf("\b\b  ");
+  printf("\b\b\nsmash § ");
+  fflush(stdout);
+}
 
 int main() {
-  char cmd[256];
-  char cmd_copy[256];
 
-  while (1) {
+  signal(SIGINT, int_handler);
+
+  while (!feof(stdin)) {
+
     // printing cursor for new line
     printf("smash § ");
+
     // takes input
     fgets(cmd, 256, stdin);
-
-    if (feof(stdin)) {
-      strncpy(cmd, "exit", 256);
-    }
     strncpy(cmd_copy, cmd, 256);
+
+    if (!strncmp(cmd, "\n", 256)) continue;
 
     // parsing by ; delimiter, splitting commands
     char** cmd_array = parse_args(cmd, ";");
