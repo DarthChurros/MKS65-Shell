@@ -3,6 +3,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/errno.h>
 #include <unistd.h>
 #include <signal.h>
 #include <dirent.h>
@@ -45,7 +46,6 @@ int main() {
     // parsing by ; delimiter, splitting commands
     char** cmd_array = parse_args(cmd, ";");
     char** p0 = cmd_array;
-    char* p1 = cmd_copy;
 
     while (*p0) {
       // char** pipe_array = parse_args(*p0, "|");
@@ -54,19 +54,27 @@ int main() {
       //   p1++;
       // }
 
+
       char** redir_array = parse_args(*p0, "<>");
 
       // for (c = redir_array; *c; c++) printf("\t\'%s\'\n", *c);
 
-      char* d;
-      int modes[sizeof(redir_array)/sizeof(char*) - 1];
+      int modes[sizeof(redir_array)/sizeof(char*) + 1];
+
+      char** p1;
+      for (p1 = redir_array; *p1; p1++) *p1 = strip(*p1);
+
+      printf("%lu\n", sizeof(redir_array)/sizeof(int));
 
       int i = 0;
 
-      for (d = p1; *d; d++) {
+      printf("running\n");
+      char* d;
+      for (d = &(cmd_copy[1]); *d; d++) {
         if (*d == '>') {
           if (d[1] == '>') {
             modes[i++] = 3;
+            d++;
           } else {
             modes[i++] = 2;
           }
@@ -76,6 +84,9 @@ int main() {
         }
       }
       modes[i] = 0;
+
+      int* n;
+      for (n = modes; *n; n++) printf("%d\n", *n);
 
       char** args = parse_args(*redir_array, " ");
 
