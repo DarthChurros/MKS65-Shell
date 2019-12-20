@@ -38,64 +38,59 @@ int exec_std(char** cmd) {
 
 int exec_redir(char** cmd, char** files, int* modes) {
 
-  // char** p;
-  // int* q;
-  // for (p = cmd; *p; p++) printf("cmd: \'%s\'\n", *p);
-  // for (p = files; *p; p++) printf("file: \'%s\'\n", *p);
-  // for (q = modes; *q; q++) printf("mode: \'%d\'\n", *q);
-
-  int use_in = 1;
-  int use_out = 1;
+  char** p;
+  int* q;
+  for (p = cmd; *p; p++) printf("cmd: \'%s\'\n", *p);
+  for (p = files; *p; p++) printf("file: \'%s\'\n", *p);
+  for (q = modes; *q; q++) printf("mode: \'%d\'\n", *q);
 
   int in_old = dup(fileno(stdin));
   int out_old = dup(fileno(stdout));
 
+  int use_in = 1;
   int i;
-  for (i = 0; files[i] || files[i-1]; i++) {
+  for (i = 0; !i || files[i-1]; i++) {
     int in;
     if (!files[i] && use_in) {
-      // printf("using stdin\n");
-      stdin = fdopen(in_old, "r");
+      printf("using stdin\n");
+      dup2(in_old, STDIN_FILENO);
 
     } else if (modes[i] == 1) {
       use_in = 0;
       in = open(files[i], O_RDONLY);
-      dup2(in, fileno(stdin));
+      dup2(in, STDIN_FILENO);
+      close(in);
     }
+    int use_out = 1;
     int j;
-    for (j = 0; files[j] || files[j-1]; j++) {
+    for (j = 0; !j || files[j-1]; j++) {
       int out;
 
-      if (!files[j]) {
-        if (use_out) {
-          // printf("using stdout\n");
-          stdout = fdopen(out_old, "w");
+      if (!files[j] && use_out) {
+        printf("using stdout\n");
+        dup2(out_old, STDOUT_FILENO);
+      } else {
+        if (modes[j] == 2) {
+          use_out = 0;
+          out = open(files[j], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+
+        } else if (modes[j] == 3) {
+          use_out = 0;
+          out = open(files[j], O_WRONLY | O_APPEND);
+
         }
-        int ret = exec_std(cmd);
-        stdout = fdopen(out_old, "w");
-        stdin = fdopen(in_old, "r");
-
-        if (ret) return 1;
-        return 0;
-
-      } else if (modes[j] == 2) {
-        use_out = 0;
-        out = open(files[j], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-
-      } else if (modes[j] == 3) {
-        use_out = 0;
-        out = open(files[j], O_WRONLY | O_APPEND);
-
+        dup2(out, STDOUT_FILENO);
+        close(out);
       }
-      dup2(out, fileno(stdout));
 
-      close(out);
+      if (exec_std(cmd)) return 1;
     }
-
-    close(in);
   }
-  stdin = fdopen(in_old, "r");
-  stdout = fdopen(out_old, "w");
+  dup2(in_old, STDIN_FILENO);
+  dup2(out_old, STDOUT_FILENO);
+
+  close(in_old);
+  close(out_old);
 
   return 0;
 }

@@ -111,13 +111,19 @@ int main() {
       // if (exec_std(args)) return 0;
 
       if (exec_redir(args, &redir_array[1], modes)) return 0;
-
       free(args);
       free(redir_array);
 
       p0++;
     }
     free(cmd_array);
+    // fpurge(stdin);
+    *cmd = '\0';
+    *cmd_copy = '\0';
+
+    printf("bruh\n");
+    printf("%d\n", fileno(stdin));
+    printf("bruh\n");
   }
   return 0;
 }
