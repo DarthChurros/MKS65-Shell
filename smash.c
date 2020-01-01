@@ -33,16 +33,14 @@ Try starting with these restrictions on input:
 Other features
 */
 
+volatile int in_backup;
+volatile int out_backup;
 char cmd[256];
 char cmd_copy[256];
 
-void int_handler(int sig)  {
-  printf("\b\b  ");
-  printf("\b\b\nsmash § ");
-  fflush(stdout);
-}
-
 int main() {
+  in_backup = dup(STDIN_FILENO);
+  out_backup = dup(STDOUT_FILENO);
 
   signal(SIGINT, int_handler);
 
@@ -55,6 +53,7 @@ int main() {
     fgets(cmd, 256, stdin);
     strncpy(cmd_copy, cmd, 256);
 
+    if (feof(stdin)) return 0;
     if (!strncmp(cmd, "\n", 256)) continue;
 
     // parsing by ; delimiter, splitting commands
@@ -117,13 +116,9 @@ int main() {
       p0++;
     }
     free(cmd_array);
-    // fpurge(stdin);
+    fpurge(stdin);
     *cmd = '\0';
     *cmd_copy = '\0';
-
-    printf("bruh\n");
-    printf("%d\n", fileno(stdin));
-    printf("bruh\n");
   }
   return 0;
 }
